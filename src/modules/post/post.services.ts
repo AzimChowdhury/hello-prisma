@@ -62,13 +62,17 @@ const getPost = async (options: any) => {
 const updatePost = async (
   id: number,
   payload: Partial<Post>
-): Promise<Post> => {
-  const result = await prisma.post.update({
-    where: {
-      id,
-    },
-    data: payload,
-  });
+): Promise<Post | number> => {
+  // ! prisma
+  // const result = await prisma.post.update({
+  //   where: {
+  //     id,
+  //   },
+  //   data: payload,
+  // });
+  // ! writing sql query into prisma
+  const result =
+    await prisma.$executeRaw` update posts set title = ${payload.title} where id = ${id}`;
   return result;
 };
 
@@ -81,6 +85,7 @@ const deletePost = async (id: number): Promise<Post> => {
   return result;
 };
 
+// just explore
 const aggregateAndGrouping = async () => {
   const result = await prisma.post.aggregate({
     _avg: {
